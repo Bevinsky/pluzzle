@@ -28,7 +28,7 @@ public class GameGrid extends Entity implements ITouchArea {
 		}
 		
 		//attachChild(new Sprite(0,0,90*8, 90*13, ac.regionMap.get("gridBG"), ac.getVertexBufferObjectManager()));
-		RotationModifier
+		
 		
 	}
 	
