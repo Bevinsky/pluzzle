@@ -8,6 +8,11 @@ import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.util.Log;
+
 public class GameGrid extends Entity implements ITouchArea {
 	
 	public static final int BLOCK_SIZE = 90;
@@ -89,15 +94,74 @@ public class GameGrid extends Entity implements ITouchArea {
 
 	@Override
 	public boolean contains(float pX, float pY) {
-		
-		return true;
+		Log.d("containstest", "coords:" + pX + "," + pY);
+		return pX >= this.getX() && pX < this.getX()+mWidth*BLOCK_SIZE &&
+			   pY >= this.getY() && pY < this.getY()+mHeight*BLOCK_SIZE;
 	}
-
+	
+	
+	boolean pressed = false;
+	float mouseX = 0;
+	float mouseY = 0;
+	
+	public void onPress(float x, float y) {
+		Log.d("mouse", "onPress: " + x + "," + y);
+		mouseX = x;
+		mouseY = y;
+		
+		//Log.d("hittest", hitTest(x, y).toString());
+	}
+	
+	public void onRelease(float x, float y) {
+		//Log.d("mouse", "onRelease: " + x + "," + y);
+		
+	}
+	
+	public void onMove(float x, float y) {
+		//Log.d("mouse", "onMove: " + x + "," + y);
+		mouseX = x;
+		mouseY = y;
+	}
+	
+	public Point hitTest(float x, float y) {		
+		for(int xi = 0;xi < mWidth;xi++) {
+			GridColumn col = grid.get(xi);
+			for(int yi = 0; yi < col.size(); yi++) {
+				if( x >= getXForColumn(xi) &&
+					x < getXForColumn(xi)+BLOCK_SIZE &&
+					y >= getYForRow(yi) &&
+					y < getYForRow(yi)+BLOCK_SIZE &&
+					col.get(yi).velocity == 0) {
+					
+					return new Point(xi, yi);
+				}
+			}			
+		}
+		return new Point(-1, -1);
+	}
+	
+	
+	
 	@Override
 	public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
 			float pTouchAreaLocalX, float pTouchAreaLocalY) {
+		//Log.d("containstest", "oAT:" + pTouchAreaLocalX + "," + pTouchAreaLocalY);
 		if(pSceneTouchEvent.isActionDown())
 			addBlock((int)(Math.random()*7), GlobalRandom.getRandomColor(), GlobalRandom.getRandomBlockNumber());
+		
+		if(pSceneTouchEvent.isActionDown() && !pressed) {
+			pressed = true;
+			onPress(pTouchAreaLocalX, pTouchAreaLocalY);
+		}
+		if((pSceneTouchEvent.isActionUp() || pSceneTouchEvent.isActionOutside()) && pressed) {
+			pressed = false;
+			onRelease(pTouchAreaLocalX, pTouchAreaLocalY);
+		}
+		if(pSceneTouchEvent.isActionMove() && pressed) {
+			onMove(pTouchAreaLocalX, pTouchAreaLocalY);
+		}
+		
+		
 		return false;
 	}
 	

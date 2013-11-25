@@ -29,6 +29,30 @@ public class BlockSprite extends Sprite {
 		this.setColor(c.getColor());
 	}
 	
+	
+	
+	
+	
+	
+	
+	public float getWhiteAlpha() {
+		return whiteSprite.getAlpha();
+	}
+	
+	public void setWhiteAlpha(float alpha) {
+		whiteSprite.setAlpha(alpha);
+	}
+	
+	
+	public float getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(float velocity) {
+		this.velocity = velocity;
+	}
+
+
 	@Override
 	public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
 			float pTouchAreaLocalX, float pTouchAreaLocalY) {
@@ -38,8 +62,9 @@ public class BlockSprite extends Sprite {
 			whiteSprite.setAlpha(0.5f);
 		if(pSceneTouchEvent.isActionUp())
 			whiteSprite.setAlpha(0.0f);
-		return super
-				.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
+		return false;
+		//return super
+		//		.onAreaTouched(pSceneTouchEvent, pTouchAreaLocalX, pTouchAreaLocalY);
 	}
 	
 	public static String getNumberTextureName(int number) {
